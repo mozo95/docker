@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  python:
+    build: 
+      context: ./
+      dockerfile: Dockerfile
+    image: python:test
+    volumes:
+      - "./code:/home/code/dockercompose"
+    command: 'bash -c "tail -f /dev/null"'
