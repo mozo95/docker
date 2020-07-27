@@ -13,7 +13,6 @@ services:
   mobsf_web:
     image: opensecurity/mobile-security-framework-mobsf
     container_name: mobsf_web
-      - VIRTUAL_PORT=8000
     volumes:
       - ./mobsf:/root/.MobSF
 
