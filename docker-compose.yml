@@ -9,3 +9,48 @@ services:
     volumes:
       - "./code:/home/code/dockercompose"
     command: 'bash -c "tail -f /dev/null"'
+    
+  mobsf_web:
+    image: opensecurity/mobile-security-framework-mobsf
+    container_name: mobsf_web
+      - VIRTUAL_PORT=8000
+    volumes:
+      - ./mobsf:/root/.MobSF
+
+  git_web:
+    image: gitea/gitea:latest
+    container_name: git_web
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+      - DB_TYPE=mysql
+      - DB_HOST=git_db:3306
+      - DB_NAME=training
+      - DB_USER=gitea
+      - DB_PASSWD=123
+      - APP_NAME=training
+      - RUN_MODE=prod
+      - DISABLE_REGISTRATION=true
+      - REQUIRE_SIGNIN_VIEW=true
+      - VIRTUAL_HOST=git.training.com
+      - VIRTUAL_PORT=3000
+      - NETWORK_ACCESS=internal
+    restart: always
+    volumes:
+      - ./git/gitea:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    depends_on:
+      - git_db
+
+  git_db:
+    image: mysql:5.7
+    container_name: git_db
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=123
+      - MYSQL_USER=gitea
+      - MYSQL_PASSWORD=123
+      - MYSQL_DATABASE=training
+    volumes:
+      - ./git/mysql:/var/lib/mysql
